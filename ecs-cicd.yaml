@@ -54,9 +54,11 @@ Parameters:
 
   GitHubOrg:
     Type: String
+    Default: 'alfreddey'
     Description: GitHub org or user that owns the application code repo.
   GitHubRepo:
     Type: String
+    Default: 'aws-ecs-iac'
     Description: GitHub repo name for the application code.
   GitHubBranch:
     Type: String
