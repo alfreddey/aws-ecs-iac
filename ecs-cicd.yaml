@@ -25,7 +25,7 @@ Parameters:
     Default: 'ecs-cicd-app'
   ContainerPort:
     Type: Number
-    Default: 8080
+    Default: 80
   ContainerCpu:
     Type: String
     Default: '256'
