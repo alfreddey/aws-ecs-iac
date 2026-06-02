@@ -47,7 +47,7 @@ Parameters:
 
   BootstrapImage:
     Type: String
-    Default: 'public.ecr.aws/ecs-sample-image/amazon-ecs-sample:latest'
+    Default: 'public.ecr.aws/nginx/nginx:latest'
     Description: >
       Image used for the initial task definition before the first GitHub
       Actions push lands in ECR. Pipeline deploys replace it.
