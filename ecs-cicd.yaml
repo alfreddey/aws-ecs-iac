@@ -601,8 +601,6 @@ Resources:
   # ============================================================
   ArtifactBucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
     Properties:
       BucketName: !Sub '${AWS::StackName}-artifacts-${AWS::AccountId}'
       BucketEncryption:
@@ -616,13 +614,6 @@ Resources:
         RestrictPublicBuckets: true
       VersioningConfiguration:
         Status: Enabled
-      LifecycleConfiguration:
-        Rules:
-          - Id: expire-old-artifacts
-            Status: Enabled
-            ExpirationInDays: 30
-            NoncurrentVersionExpiration:
-              NoncurrentDays: 7
 
   # ============================================================
   # CI/CD — CodeBuild generates taskdef.json + appspec.yaml
