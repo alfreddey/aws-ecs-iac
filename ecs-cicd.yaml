@@ -58,7 +58,7 @@ Parameters:
     Description: GitHub org or user that owns the application code repo.
   GitHubRepo:
     Type: String
-    Default: 'aws-ecs-iac'
+    Default: 'aws-ecs-app'
     Description: GitHub repo name for the application code.
   GitHubBranch:
     Type: String
