@@ -15,6 +15,6 @@ parameters:
   ContainerPort: '80'
   PublicSubnet1Cidr: 10.0.1.0/24
   GitHubBranch: main
-  GitHubRepo: aws-ecs-iac
+  GitHubRepo: aws-ecs-app
   MaxCapacity: '4'
 tags: {}
