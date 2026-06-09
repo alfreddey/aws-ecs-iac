@@ -308,11 +308,12 @@ Resources:
             "rules": [
               {
                 "rulePriority": 1,
-                "description": "Keep last 20 images",
+                "description": "Expire images older than 7 days",
                 "selection": {
                   "tagStatus": "any",
-                  "countType": "imageCountMoreThan",
-                  "countNumber": 20
+                  "countType": "sinceImagePushed",
+                  "countUnit": "days",
+                  "countNumber": 7
                 },
                 "action": { "type": "expire" }
               }
