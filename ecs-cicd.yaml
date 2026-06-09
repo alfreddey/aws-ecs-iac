@@ -135,25 +135,6 @@ Resources:
         - Key: Name
           Value: !Sub '${AWS::StackName}-private-2'
 
-  NatEip:
-    Type: AWS::EC2::EIP
-    DependsOn: InternetGatewayAttachment
-    Properties: 
-      Domain: vpc
-      Tags:
-        - Key: Name
-          Value: !Sub '${AWS::StackName}-nat-eip'
-
-  NatGateway:
-    Type: AWS::EC2::NatGateway
-    Properties:
-      AllocationId: !GetAtt NatEip.AllocationId
-      AvailabilityMode: regional
-      VpcId: !Ref VPC
-      Tags:
-        - Key: Name
-          Value: !Sub '${AWS::StackName}-nat'
-
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -190,13 +171,6 @@ Resources:
         - Key: Name
           Value: !Sub '${AWS::StackName}-private-rt'
 
-  PrivateDefaultRoute:
-    Type: AWS::EC2::Route
-    Properties:
-      RouteTableId: !Ref PrivateRouteTable
-      DestinationCidrBlock: 0.0.0.0/0
-      NatGatewayId: !Ref NatGateway
-
   PrivateSubnet1Assoc:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
@@ -232,39 +206,36 @@ Resources:
     Properties:
       GroupDescription: ECS tasks accept traffic only from the ALB
       VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref ContainerPort
+          ToPort: !Ref ContainerPort
+          SourceSecurityGroupId: !Ref AlbSecurityGroup
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}-ecs-sg'
 
-  EcsIngressFromAlb:
-    Type: AWS::EC2::SecurityGroupIngress
-    Properties:
-      GroupId: !Ref EcsSecurityGroup
-      IpProtocol: tcp
-      FromPort: !Ref ContainerPort
-      ToPort: !Ref ContainerPort
-      SourceSecurityGroupId: !Ref AlbSecurityGroup
-      Description: App traffic from ALB
-
   VpcEndpointSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: HTTPS into interface VPC endpoints from ECS tasks only
+      GroupDescription: HTTPS into interface VPC endpoints from the private subnets
       VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: !Ref PrivateSubnet1Cidr
+          Description: HTTPS from private subnet 1 (Fargate ENIs)
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: !Ref PrivateSubnet2Cidr
+          Description: HTTPS from private subnet 2 (Fargate ENIs)
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}-vpce-sg'
 
-  VpceIngressFromEcs:
-    Type: AWS::EC2::SecurityGroupIngress
-    Properties:
-      GroupId: !Ref VpcEndpointSecurityGroup
-      IpProtocol: tcp
-      FromPort: 443
-      ToPort: 443
-      SourceSecurityGroupId: !Ref EcsSecurityGroup
-      Description: HTTPS from ECS tasks
-
+          
   # ============================================================
   # VPC ENDPOINTS — ECR + S3 + CloudWatch Logs
   # ============================================================
@@ -428,9 +399,9 @@ Resources:
       CidrIp: 0.0.0.0/0
       Description: CodeDeploy test traffic to green target group
 
-  # ============================================================
+  # ===============================================================
   # ECS CLUSTER + TASK + SERVICE (DeploymentController=CODE_DEPLOY)
-  # ============================================================
+  # ===============================================================
   EcsCluster:
     Type: AWS::ECS::Cluster
     Properties:
@@ -504,9 +475,6 @@ Resources:
       PlatformVersion: LATEST
       DeploymentController:
         Type: CODE_DEPLOY
-      DeploymentConfiguration:
-        MaximumPercent: 200
-        MinimumHealthyPercent: 100
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: DISABLED
