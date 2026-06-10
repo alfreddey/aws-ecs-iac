@@ -1,20 +1,3 @@
-template-file-path: ecs-cicd.yaml
-parameters:
-  PrivateSubnet2Cidr: 10.0.12.0/24
-  GitHubOrg: alfreddey
-  CpuScalingTargetValue: '60'
-  DesiredCount: '1'
-  MinCapacity: '1'
-  PrivateSubnet1Cidr: 10.0.11.0/24
-  PublicSubnet2Cidr: 10.0.2.0/24
-  BootstrapImage: public.ecr.aws/nginx/nginx:latest
-  VpcCidr: 10.0.0.0/16
-  ContainerMemory: '512'
-  ServiceName: ecs-cicd-app
-  ContainerCpu: '256'
-  ContainerPort: '80'
-  PublicSubnet1Cidr: 10.0.1.0/24
-  GitHubBranch: main
-  GitHubRepo: aws-ecs-app
-  MaxCapacity: '4'
+template-file-path: ecs-cicid.yaml
+parameters: {}
 tags: {}
