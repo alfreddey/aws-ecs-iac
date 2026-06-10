@@ -1,3 +1,3 @@
-template-file-path: ecs-cicid.yaml
+template-file-path: ecs-cicd.yaml
 parameters: {}
 tags: {}
