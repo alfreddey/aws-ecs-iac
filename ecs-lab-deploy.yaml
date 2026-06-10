@@ -1,4 +1,3 @@
 template-file-path: ecs-cicd.yaml
-parameters:
-  BootstrapImage: 183631301567.dkr.ecr.eu-north-1.amazonaws.com/bootstrap-nginx:latest
+parameters: {}
 tags: {}
